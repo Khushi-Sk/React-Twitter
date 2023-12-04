@@ -1,8 +1,9 @@
 
-import { useContext } from 'react'
+
 import Button from '../components/Button'
 import { useNavigate } from 'react-router-dom'
-import HomeFeed from './Home/homefeed'
+
+
 // import { AuthContext } from '../context/AuthContext'
 
 function StatusBar() {
@@ -36,8 +37,11 @@ function Header() {
   )
 }
 
+
 function Main() {
-  const navigate = useNavigate()
+  
+  const navigate = useNavigate();
+  
   return (
     <>
       <div className="flex flex-col  items-center justify-center self-stretch gap-1">
@@ -48,9 +52,7 @@ function Main() {
           Join today.
         </p>
         <div className="my-10 mx-10 flex justify-center items-center">
-            <Button variant='default' wh='medium' size='lg' onClick={() => navigate('/login1')} >Create Account</Button>
-         
-          
+            <Button variant='default' wh='medium' size='lg' onClick={() => navigate('/login1')} >Create Account</Button> 
         </div>
         <div className="flex items-center justify-center gap-1 self-stretch">
           <hr className="border-neutral-700 flex-grow border-t-2 ml-2" />
@@ -63,32 +65,52 @@ function Main() {
 }
 
 function HomePage() {
-  
   // const { setIsLoggedIn} = useContext(AuthContext)
-  const navigate = useNavigate();
+  const navigate= useNavigate()
+  
+  const onSignIn = async () => {
+  const BaseUrl = 'https://one00x-react-backend.onrender.com'
+  const Endpoint = 'login'
+    const response = await fetch(`${BaseUrl}/${Endpoint}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+      email:"batman@example.com",
+      password: "gothamrocks",
+      })
+    })
+
+    if (!response.ok) {
+      alert("Login failed! Invalid credentials");
+      throw new Error(response.statusText);
+    }
+    const jsonResponse = await response.json();
+    console.log(jsonResponse);  
+    navigate("/homefeed")
+  }
+  
 
   return (
-  
-  <>
-    <div className="bg-black h-screen items-center">
-      <StatusBar />
-      <Header />
+      <>
+        <div className="bg-black h-screen items-center">
+          <StatusBar />
+          <Header />
 
-      <div className="w-screen py-0 px-7 inline-flex flex-col items-center justify-center gap-10 ">
-        <Main/>
-        <footer className="text-neutral-50 flex flex-col items-center justify-center self-stretch gap-1">
-          <p>Already have an account?</p>
-          <div className="my-10 mx-10 flex justify-center items-center">
-            <a>
-              <Button variant='outline' wh='medium' size='md' onClick={() => navigate('/homefeed')} >Sign Up</Button>
-            </a>
-          </div>
-        </footer>
-      </div>
-    </div>
-  </>
-
+          <div className="w-screen py-0 px-7 inline-flex flex-col items-center justify-center gap-10 ">
+            <Main/>
+            <footer className="text-neutral-50 flex flex-col items-center justify-center self-stretch gap-1">
+              <p>Already have an account?</p>
+              <div className="my-10 mx-10 flex justify-center items-center">
+                <Button variant='outline' wh='medium' size='md' onClick={onSignIn} >Sign Up</Button>
+              </div>
+            </footer> 
+           </div>
+        </div>
+      </>
   )
 }
 
 export default HomePage;
+
